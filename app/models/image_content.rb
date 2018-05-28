@@ -1,3 +1,5 @@
+require 'exifr/jpeg'
+
 class ImageContent
   include Mongoid::Document
   #3:2 ratios
