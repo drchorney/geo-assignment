@@ -9,8 +9,26 @@ class ImagesController < ApplicationController
 
   def index
     authorize Image
-    @images = policy_scope(Image.all)
+
+    distance_limit = nil
+    distance_limit = params[:distance].to_f if params[:distance]!=nil
+    ids = params[:ids] # of the form "1,2,3,4,5"
+
+    scope = Image.all
+    if ids != nil 
+      ids_to_exclude = ids.split(",").map {|n| n.to_i }
+      scope = scope.exclude(ids_to_exclude)
+    end
+
+    if params[:lng]!= nil && params[:lat]!= nil && distance_limit != nil
+      @origin=Point.new(params[:lng].to_f, params[:lat].to_f)
+      scope = scope.within_range(@origin,distance_limit)
+    end
+
+    @images = policy_scope(scope)
     @images = ImagePolicy.merge(@images)
+
+    @images=Image.with_distance(@origin, @images) if distance_limit!=nil
   end
 
   def show

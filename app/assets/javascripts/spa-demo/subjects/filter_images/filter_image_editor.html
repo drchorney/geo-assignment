@@ -1,0 +1,88 @@
+<form name="select_origin"
+      class="navbar-form"      
+      ng-hide="$ctrl.location">
+      <input name="address-search"
+             type="text" 
+             placeholder="Address Search"
+             ng-model="$ctrl.address"
+             ng-required="true">
+      <button title="lookup-address"
+              class="btn btn-default"
+              ng-disabled="select_origin.$invalid"
+              ng-click="$ctrl.lookupAddress()">Lookup</button>
+</form>
+
+<span class="search-criteria"
+    ng-show="$ctrl.location">
+  <form name="show_origin"
+        class="navbar-form">
+    <label>Address: </label>
+    <div></div>
+    <span class="current-origin">{{$ctrl.getFormattedAddress()}}</span>
+    <div></div>
+    <label>Latitude: </label>
+    <span class="current-origin">{{$ctrl.getLatitude()}}</span>
+    <label>Longitude: </label>
+    <span class="current-origin">{{$ctrl.getLongitude()}}</span>
+
+    <button title="change-origin"
+            type="submit" 
+            class="btn btn-default"
+            ng-click="$ctrl.clearOrigin()">Change</button>
+  </form>  
+</span>  
+
+<form class="image-form row" name="imageform">
+  <!-- <span class="image_id id">{{$ctrl.item.id}}</span>
+  <span class="invalid">{{$ctrl.item.errors.full_messages}}</span> -->
+
+  <div class="image-caption row col-lg-12">
+    <label class="col-xs-3">Distance:</label>
+    <input class="col-xs-9"
+           name="image-caption"
+           type="number"
+           ng-model="$ctrl.distance" 
+           ng-readonly="!$ctrl.authz.canQuery"
+           ng-required="true"
+           maxlength="80"
+           />
+    <span class="invalid">{{$ctrl.distance.errors.name}}</span>
+  </div>
+
+  <div class="image-controls">
+    <span ng-show="$ctrl.authz.canQuery">
+      <button name="image-create"
+              ng-show="$ctrl.authz.canQuery"
+              type="submit"
+              ng-disabled="imageform.$invalid || !$ctrl.getLatitude()"
+              ng-click="$ctrl.submit()">Find Images</button>
+    </span>
+  </div>
+  <div class="image-controls">
+      <span ng-show="$ctrl.authz.canQuery">
+        <button name="image-create"
+                ng-show="$ctrl.authz.canQuery"
+                type="submit"
+                ng-disabled="!$ctrl.stuff_deleted"
+                ng-click="$ctrl.refresh()">Reset Removals</button>
+      </span>
+    </div>
+</form>
+
+<div class="image-list" ng-show="$ctrl.authz.canQuery">
+    <ul>
+      <li ng-repeat="item in $ctrl.images | orderBy:'distance'">
+        <a ui-sref="images({id:item.id})">
+            <span class="image_id id">{{item.id}}</span>                    
+            <img style="width: 50px; height: 33px" 
+                   ng-src="{{item.content_url}}?width=50"/>
+            {{item.caption}}
+        </a>
+        <span> -- Distance: {{item.distance}}</span>
+        <span>Check to remove</span><input type="checkbox"               
+               name="image-delete"
+               ng-click="$ctrl.remove_from_list(item.id)"/>
+      </li>
+      
+    </ul>
+  </div>

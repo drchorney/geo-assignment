@@ -59,3 +59,6 @@
 //= require spa-demo/subjects/things/things_authz.service
 //= require spa-demo/subjects/things/things_authz.directive
 //= require spa-demo/subjects/things/things.component
+
+//= require spa-demo/subjects/filter_images/current_filter_images.service
+//= require spa-demo/subjects/filter_images/filter_images.component
